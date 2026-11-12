@@ -1,0 +1,6 @@
+{
+  "name": "council",
+  "version": "0.3.0",
+  "description": "Ask a question, convene specialist agents, and synthesize their findings into one clear answer.",
+  "skills": "./skills/"
+}

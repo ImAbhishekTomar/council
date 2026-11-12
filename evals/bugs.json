@@ -1,0 +1,101 @@
+[
+  {
+    "id": "pagination",
+    "spec": "Page numbers are 1-indexed. paginate returns the items of that page. totalPages returns how many pages exist.",
+    "code": "function paginate(items, page, size) {\n  const start = page * size;\n  return items.slice(start, start + size);\n}\nfunction totalPages(items, size) {\n  return Math.floor(items.length / size);\n}",
+    "bugs": [
+      {"id": "offset", "desc": "start should be (page - 1) * size because pages are 1-indexed", "any": ["(page - 1)", "page - 1", "1-indexed", "1-based", "off-by-one", "off by one", "zero-indexed", "0-indexed"]},
+      {"id": "ceil", "desc": "totalPages must round up (Math.ceil), floor drops the last partial page", "any": ["ceil", "round up", "partial page", "last page", "remainder"]}
+    ]
+  },
+  {
+    "id": "user-cache",
+    "spec": "getUser must send at most one network request per id even when called concurrently, and memory use must stay bounded.",
+    "code": "const cache = new Map();\nasync function getUser(id) {\n  if (cache.has(id)) return cache.get(id);\n  const user = await fetchUser(id);\n  cache.set(id, user);\n  return user;\n}",
+    "bugs": [
+      {"id": "concurrent", "desc": "Caches the result, not the promise, so concurrent calls for the same id all call fetchUser", "any": ["concurrent", "in-flight", "in flight", "same time", "cache the promise", "store the promise", "stampede", "duplicate request", "race"]},
+      {"id": "unbounded", "desc": "The cache grows without limit (no size cap, TTL or eviction)", "any": ["unbounded", "grows", "evict", "ttl", "lru", "memory leak", "size limit", "no limit", "bounded", "stale"]}
+    ]
+  },
+  {
+    "id": "split-bill",
+    "spec": "Amounts are integer cents. splitBill returns one share per person and the shares must add up exactly to totalCents. people is at least 1.",
+    "code": "function splitBill(totalCents, people) {\n  const share = Math.round(totalCents / people);\n  return Array(people).fill(share);\n}",
+    "bugs": [
+      {"id": "sum", "desc": "Rounding each share equally makes the sum differ from the total (for example 100 cents over 3 people gives 99); the remainder must be distributed", "any": ["sum", "add up", "adds up", "remainder", "distribute", "do not add", "doesn't add", "does not add", "99", "101", "leftover", "penny", "cent"]}
+    ]
+  },
+  {
+    "id": "find-orders",
+    "spec": "findOrders returns the user's orders with the given status and a positive total. db.query returns a Promise of an array of rows.",
+    "code": "async function findOrders(db, userId, status) {\n  const rows = db.query(`SELECT * FROM orders WHERE user_id = ${userId} AND status = '${status}'`);\n  return rows.filter((r) => r.total > 0);\n}",
+    "bugs": [
+      {"id": "injection", "desc": "SQL injection through string interpolation of userId and status", "any": ["injection", "parameteri", "prepared", "placeholder", "sanitiz", "escape"]},
+      {"id": "await", "desc": "Missing await: rows is a Promise so rows.filter throws", "any": ["await", "promise", "not a function", "filter is not"]}
+    ]
+  },
+  {
+    "id": "retry",
+    "spec": "retry runs fn at most `attempts` times in total (default 3) and waits with exponential backoff (100ms, 200ms, 400ms...) between tries. After the last failure it throws the error.",
+    "code": "async function retry(fn, attempts = 3) {\n  for (let i = 0; i <= attempts; i++) {\n    try {\n      return await fn();\n    } catch (e) {\n      if (i === attempts) throw e;\n      await sleep(100);\n    }\n  }\n}",
+    "bugs": [
+      {"id": "count", "desc": "Loop uses <= so fn runs attempts + 1 times (4 instead of 3)", "any": ["<=", "off-by-one", "off by one", "4 times", "four", "one extra", "extra attempt", "attempts + 1", "attempts+1"]},
+      {"id": "backoff", "desc": "Delay is a constant 100ms, not exponential", "any": ["exponential", "constant", "fixed delay", "backoff", "2 **", "2**", "doubl"]}
+    ]
+  },
+  {
+    "id": "unique",
+    "spec": "unique(items) returns the items with duplicates removed, keeping the first occurrence and original order. items can contain dicts and lists.",
+    "code": "def unique(items):\n    seen = set()\n    out = []\n    for x in items:\n        if x in seen:\n            out.append(x)\n        seen.add(x)\n    return out",
+    "bugs": [
+      {"id": "inverted", "desc": "The condition is inverted: it appends items already seen (the duplicates) instead of new ones", "any": ["inverted", "not in", "backwards", "reversed", "opposite", "duplicates instead", "only duplicates", "wrong branch", "if x in seen"]},
+      {"id": "unhashable", "desc": "set membership fails with TypeError for unhashable items such as dicts and lists", "any": ["unhashable", "hashable", "typeerror", "dict", "list"]}
+    ]
+  },
+  {
+    "id": "webhook-signature",
+    "spec": "verifySignature checks an HMAC-SHA256 webhook signature. It must not leak information to an attacker through timing.",
+    "code": "function verifySignature(body, signature, secret) {\n  const expected = crypto.createHmac('sha256', secret).update(body).digest('hex');\n  return expected == signature;\n}",
+    "bugs": [
+      {"id": "timing", "desc": "String comparison is not constant time; use crypto.timingSafeEqual", "any": ["timing", "constant-time", "constant time", "timingsafeequal", "side channel", "side-channel"]}
+    ]
+  },
+  {
+    "id": "next-id",
+    "spec": "nextId returns a unique increasing id. Many requests call it at the same time. db.get and db.set are async.",
+    "code": "let counter = 0;\nasync function nextId(db) {\n  const row = await db.get('ids');\n  counter = row.value + 1;\n  await db.set('ids', counter);\n  return counter;\n}",
+    "bugs": [
+      {"id": "race", "desc": "Read-modify-write across awaits lets concurrent calls read the same value and return duplicate ids; needs an atomic increment or lock", "any": ["race", "atomic", "concurrent", "lost update", "interleav", "duplicate id", "same value", "lock", "transaction"]},
+      {"id": "shared-state", "desc": "The module-level counter is shared mutable state: after an await another call overwrites it so this call can return the wrong id", "any": ["module-level", "module level", "shared", "global", "counter variable", "overwrit", "local variable", "const id", "closure"]}
+    ]
+  },
+  {
+    "id": "cart",
+    "spec": "Cart prices are integer cents. cart.total must always equal the sum of price * qty of the items in cart.items, minus any coupon. Totals stay integers.",
+    "code": "function addItem(cart, item) {\n  cart.items.push(item);\n  cart.total += item.price * item.qty;\n}\nfunction removeItem(cart, id) {\n  cart.items = cart.items.filter((i) => i.id !== id);\n}\nfunction applyCoupon(cart, pct) {\n  cart.total = cart.total * (1 - pct / 100);\n}",
+    "bugs": [
+      {"id": "remove-total", "desc": "removeItem does not update cart.total", "any": ["removeitem", "remove", "total is not", "total isn't", "not updated", "does not update", "doesn't update", "stale total", "out of sync"]},
+      {"id": "fractional", "desc": "applyCoupon can produce fractional cents (needs rounding)", "any": ["fraction", "round", "float", "decimal", "integer", "non-integer", "cents"]}
+    ]
+  },
+  {
+    "id": "days-between",
+    "spec": "daysBetween(a, b) returns the number of calendar days from local date a to local date b. a and b are Date objects at local midnight. It must be correct across daylight saving changes.",
+    "code": "function daysBetween(a, b) {\n  return Math.floor((b - a) / 86400000);\n}",
+    "bugs": [
+      {"id": "dst", "desc": "A day is not always 24 hours: across a DST change the difference is 23 or 25 hours so floor gives an off-by-one; use Math.round or UTC dates", "any": ["dst", "daylight", "23 hours", "25 hours", "not always 24", "time zone", "timezone", "utc"]}
+    ]
+  },
+  {
+    "id": "clamp-sum",
+    "spec": "clamp limits n to the range lo..hi (lo <= hi). sum adds numbers in an array. Both are correct and standard.",
+    "code": "function clamp(n, lo, hi) {\n  return Math.min(Math.max(n, lo), hi);\n}\nfunction sum(xs) {\n  return xs.reduce((a, b) => a + b, 0);\n}",
+    "bugs": []
+  },
+  {
+    "id": "chunks",
+    "spec": "chunks(xs, n) splits a list into consecutive pieces of at most n items. n must be a positive integer. It is correct.",
+    "code": "def chunks(xs, n):\n    if n <= 0:\n        raise ValueError('n must be positive')\n    return [xs[i:i + n] for i in range(0, len(xs), n)]",
+    "bugs": []
+  }
+]

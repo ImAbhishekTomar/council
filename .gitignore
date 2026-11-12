@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+evals/py/.venv*/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated evaluation data
+evals/outputs/
+evals/deepeval-results.json
+evals/promptfoo-results.json
+evals/results-*.json

@@ -1,0 +1,14 @@
+[
+  {
+    "q": "A Node HTTP server calls server.close() on SIGTERM but never exits while a browser holds an SSE stream. Why, and what is the minimal fix?",
+    "must": ["open connections", "closeAllConnections"]
+  },
+  {
+    "q": "In JavaScript, what does `[10, 9, 1].sort()` return and why?",
+    "must": ["[1, 10, 9]", "string"]
+  },
+  {
+    "q": "Two processes both check whether port 8080 is free, then both spawn a server. What goes wrong and how do you make the pid file reliable?",
+    "must": ["EADDRINUSE", "after"]
+  }
+]

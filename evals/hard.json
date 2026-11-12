@@ -1,0 +1,22 @@
+[
+  {"q": "A React effect `useEffect(() => { const id = setInterval(() => setCount(count + 1), 1000); return () => clearInterval(id); }, [])` makes the counter stop at 1. Why, and what is the minimal fix?", "must": [["stale", "closure"], ["functional", "prev =>", "c => c + 1", "setCount(c", "dependency"]]},
+  {"q": "Two Postgres transactions update the same two rows, one in order A then B and the other B then A. What happens and how do you prevent it?", "must": ["deadlock", ["consistent order", "same order", "order the", "lock ordering"]]},
+  {"q": "Two processes run `if (!exists(key)) insert(key)` against the same table. What goes wrong and what is the correct fix?", "must": [["race", "both"], ["unique", "on conflict", "upsert"]]},
+  {"q": "What does `['1','2','3'].map(parseInt)` return and why?", "must": ["NaN", "radix"]},
+  {"q": "In Python, `def add(x, acc=[]): acc.append(x); return acc` is called twice with no acc. What does the second call return and why?", "must": [["[1, 2]", "same list", "shared"], ["definition", "once", "defined"]]},
+  {"q": "I rewound my branch by one commit with a hard reset and lost a commit I had not pushed. Can I get it back, and how?", "must": ["reflog"]},
+  {"q": "A server listens on 127.0.0.1 and only checks that the TCP peer address is loopback. How can a malicious website still make requests to it from the victim's browser, and what check stops it?", "must": ["rebinding", ["host header", "host"]]},
+  {"q": "`await Promise.all(items.map(async (i) => db.query(...)))` runs over 10,000 items and the app starts timing out on connections. Why and what is the fix?", "must": [["pool", "connection"], ["limit", "concurrency", "batch", "p-limit", "chunk"]]},
+  {"q": "A SQL query `SELECT c.id, COUNT(o.id) FROM c LEFT JOIN o ON o.cid = c.id WHERE o.status = 'paid' GROUP BY c.id` drops customers with zero orders. Why, and what is the fix?", "must": [["inner join", "null", "filter"], ["on o.status", "move", "in the on", "ON clause"]]},
+  {"q": "In React a list of inputs uses `key={index}`. After deleting the first item the wrong input keeps its typed text. Why?", "must": ["key", ["identity", "state", "reuse", "position"]]},
+  {"q": "A JWT library call `jwt.verify(token, publicKey)` does not pin the algorithm. What attacks does that allow?", "must": [["alg", "algorithm"], ["none", "hs256", "confusion"]]},
+  {"q": "A cron job scheduled for 02:30 local time misbehaves twice a year. Why?", "must": [["dst", "daylight"], ["skipped", "twice", "repeated", "does not exist", "ambiguous"]]},
+  {"q": "In JavaScript `Math.round(1.005 * 100) / 100` gives 1 not 1.01. Why, and how do you handle money correctly?", "must": [["floating", "ieee", "binary"], ["integer", "cents", "decimal", "bigint"]]},
+  {"q": "A Node server calls `res.write(chunk)` in a loop and ignores its return value while sending a huge response to a slow client. What happens?", "must": ["backpressure", ["memory", "buffer"]]},
+  {"q": "A local-only dev server accepts POST requests that perform an action. Why can a random website trigger it with a `text/plain` fetch even though CORS blocks reading the response?", "must": [["simple request", "preflight"], ["not sent", "no preflight", "skips", "without"]]},
+  {"q": "A container exits with code 137. What does it mean and what are the two most common causes?", "must": [["sigkill", "kill -9", "128+9"], ["oom", "out of memory"]]},
+  {"q": "The regex /(a+)+$/ hangs on 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaab'. Why?", "must": [["backtracking", "catastrophic"], ["exponential", "nested"]]},
+  {"q": "A Node service in Docker takes 10 seconds to stop on `docker stop`. Why, and what fixes it?", "must": [["pid 1", "signal", "sigterm"], ["exec", "tini", "init", "handler", "exec form"]]},
+  {"q": "An async function does `const n = await getCount(); await save(n + 1);` and two requests arrive together. What is wrong and what is the fix?", "must": [["race", "lost update", "interleav"], ["atomic", "lock", "transaction", "increment", "compare"]]},
+  {"q": "A Postgres query `WHERE lower(email) = 'a@b.com'` is slow despite an index on email. Why, and what fixes it?", "must": [["expression", "function", "does not use", "can't use", "cannot use"], ["lower(email)", "expression index", "functional index", "citext"]]}
+]

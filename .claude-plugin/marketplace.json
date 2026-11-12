@@ -1,0 +1,13 @@
+{
+  "name": "council",
+  "owner": {
+    "name": "Abhishek Tomar"
+  },
+  "plugins": [
+    {
+      "name": "council",
+      "source": "./",
+      "description": "Ask a question, convene specialist agents, and synthesize their findings into one clear answer."
+    }
+  ]
+}

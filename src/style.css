@@ -1,0 +1,84 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f8fafc;
+  background: #070c10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; min-width: 320px; height: 100%; min-height: 100%; margin: 0; }
+body { background: #070c10; }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+
+.dashboard {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 420px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 76px minmax(0, 1fr);
+  background: #070c10;
+}
+
+.dashboard-header {
+  min-width: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 0 22px;
+  border-bottom: 1px solid rgba(134, 172, 166, 0.2);
+  background: #080f13;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f8fafc;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.brand > span:last-child { display: grid; gap: 2px; }
+.brand small { color: #94a3b8; font-size: 10px; font-weight: 500; letter-spacing: 0.04em; }
+.brand-mark { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid #47756d; border-radius: 11px; color: #8ddcd4; background: rgba(80, 145, 129, 0.1); }
+
+.session-question { min-width: 0; display: grid; gap: 4px; }
+.session-question > span { color: #829590; font-size: 10px; font-weight: 650; letter-spacing: 0.02em; }
+.session-question p { overflow: hidden; color: #e5eeeb; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+
+.connection { display: flex; align-items: center; gap: 9px; padding: 8px 11px; border: 1px solid rgba(226, 184, 121, 0.2); border-radius: 999px; background: rgba(226, 184, 121, 0.06); color: #ddb978; font-size: 11px; white-space: nowrap; }
+.connection i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.connection.is-connected { color: #7ad8b5; border-color: rgba(122, 216, 181, 0.22); background: rgba(122, 216, 181, 0.06); }
+.connection.is-connected i { animation: status-breathe 2.4s ease-in-out infinite; }
+
+.graph-panel { min-width: 0; min-height: 0; }
+
+.empty-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #f8fafc; text-align: center; }
+.empty-page h1 { font-size: 22px; }
+.empty-page p { color: #94a3b8; font-size: 13px; }
+
+@media (max-width: 640px) {
+  .dashboard-header { grid-template-columns: 120px minmax(0, 1fr) auto; gap: 10px; padding: 0 12px; }
+  .brand { font-size: 13px; gap: 7px; }
+  .brand-mark { width: 30px; height: 30px; border-radius: 9px; }
+  .session-question p { font-size: 11px; }
+  .connection { gap: 5px; font-size: 9px; }
+  .connection { padding: 7px 8px; }
+}
+
+@keyframes status-breathe {
+  50% { box-shadow: 0 0 0 4px rgba(122, 216, 181, 0.13); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
